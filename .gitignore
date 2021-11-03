@@ -1,0 +1,9 @@
+﻿.vs
+Api/bin
+Api/obj
+Business/bin
+DAL/bin
+Domain/bin
+Domain/obj
+Business/obj
+DAL/obj
