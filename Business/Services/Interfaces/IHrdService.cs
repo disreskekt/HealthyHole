@@ -11,7 +11,7 @@ namespace Business.Services.Interfaces
         void DeleteEmployee(int Id);
         IEnumerable<EmployeeDto> GetAllEmployees(Position? position);
         IEnumerable<Position> GetAllPositions();
-        EmployeeDto GetEmployeeById(int employeeId);
+        EmployeeDto GetEmployeeDtoById(int employeeId);
         IEnumerable<StatisticsDto> GetStatistics();
     }
 }

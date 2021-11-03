@@ -128,7 +128,7 @@ namespace Api.Controllers
         {
             try
             {
-                var employee = _hrdService.GetEmployeeById(employeeId);
+                var employee = _hrdService.GetEmployeeDtoById(employeeId);
 
                 return Ok(employee);
             }

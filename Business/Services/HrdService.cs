@@ -20,24 +20,36 @@ namespace Business.Services
 
         public EmployeeDto AddEmployee(AddEmployeeDto addEmployeeDto)
         {
-            if (string.IsNullOrWhiteSpace(addEmployeeDto.FirstName) || string.IsNullOrWhiteSpace(addEmployeeDto.LastName) || !Enum.IsDefined(typeof(Position), addEmployeeDto.Position))
+            if (string.IsNullOrWhiteSpace(addEmployeeDto.FirstName) 
+                || string.IsNullOrWhiteSpace(addEmployeeDto.LastName)
+                || !Enum.IsDefined(typeof(Position), addEmployeeDto.Position))
             {
                 throw new ArgumentException();
             }
 
-            var employee = _employeeRepository.AddEmployee(addEmployeeDto);
+            var employee = new Employee
+            {
+                FirstName = addEmployeeDto.FirstName,
+                LastName = addEmployeeDto.LastName,
+                Patronymic = addEmployeeDto.Patronymic,
+                Position = addEmployeeDto.Position,
+            };
+
+            _employeeRepository.AddEmployee(employee);
 
             return employee.ToEmployeeDto();
         }
 
         public EmployeeDto EditEmployee(EditEmployeeDto editEmployeeDto)
         {
-            if (editEmployeeDto.Id <= 0)
-            {
-                throw new ArgumentException();
-            }
+            var employee = _employeeRepository.GetEmployeeById(editEmployeeDto.Id);
 
-            var employee = _employeeRepository.EditEmployee(editEmployeeDto);
+            employee.LastName = !string.IsNullOrWhiteSpace(editEmployeeDto.LastName) ? editEmployeeDto.LastName : employee.LastName;
+            employee.FirstName = !string.IsNullOrWhiteSpace(editEmployeeDto.FirstName) ? editEmployeeDto.FirstName : employee.FirstName;
+            employee.Patronymic = !string.IsNullOrWhiteSpace(editEmployeeDto.Patronymic) ? editEmployeeDto.Patronymic : employee.Patronymic;
+            employee.Position = Enum.IsDefined(typeof(Position), editEmployeeDto.Position) ? editEmployeeDto.Position : employee.Position;
+
+            _employeeRepository.EditEmployee(employee);
 
             return employee.ToEmployeeDto();
         }
@@ -49,7 +61,9 @@ namespace Business.Services
                 throw new ArgumentException();
             }
 
-            _employeeRepository.DeleteEmployee(Id);
+            var employee = GetEmployeeById(Id);
+
+            _employeeRepository.DeleteEmployee(employee);
         }
 
         public IEnumerable<EmployeeDto> GetAllEmployees(Position? position)
@@ -77,12 +91,14 @@ namespace Business.Services
 
         public IEnumerable<Position> GetAllPositions()
         {
-            return Enum.GetValues(typeof(Position)).Cast<Position>();
+            var positions = Enum.GetValues(typeof(Position)).Cast<Position>();
+
+            return positions;
         }
 
-        public EmployeeDto GetEmployeeById(int employeeId)
+        public EmployeeDto GetEmployeeDtoById(int employeeId)
         {
-            var employee = _employeeRepository.GetEmployeeById(employeeId);
+            var employee = GetEmployeeById(employeeId);
 
             return employee.ToEmployeeDto();
         }
@@ -94,6 +110,13 @@ namespace Business.Services
             var employeesDto = employees.ToEmployeeDtoList();
 
             return employeesDto.ToStatisticsDtoList();
+        }
+
+        private Employee GetEmployeeById(int employeeId)
+        {
+            var employee = _employeeRepository.GetEmployeeById(employeeId);
+
+            return employee;
         }
     }
 }

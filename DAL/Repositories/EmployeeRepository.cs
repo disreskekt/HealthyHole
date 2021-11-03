@@ -1,7 +1,5 @@
 ﻿using DAL.Extensions;
 using DAL.Repositories.Interfaces;
-using Domain.Extensions;
-using Domain.Models.Dto;
 using HealthyHole.DAL;
 using HealthyHole.Models;
 using Microsoft.EntityFrameworkCore;
@@ -21,52 +19,20 @@ namespace DAL.Repositories
             _context = context;
         }
 
-        public Employee AddEmployee(AddEmployeeDto addEmployeeDto)
+        public void AddEmployee(Employee employee)
         {
-            var employee = new Employee
-            {
-                FirstName = addEmployeeDto.FirstName,
-                LastName = addEmployeeDto.LastName,
-                Patronymic = addEmployeeDto.Patronymic,
-                Position = addEmployeeDto.Position,
-            };
-
             _context.Employees.Add(employee);
             _context.SaveChanges();
-
-            return GetEmployeeById(employee.Id);
         }
 
-        public Employee EditEmployee(EditEmployeeDto editEmployeeDto)
+        public void EditEmployee(Employee employee)
         {
-            var employee = _context.Employees.Include(emp => emp.Shifts).FirstOrDefault(emp => emp.Id == editEmployeeDto.Id);
-
-            if (employee is null)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            employee.FirstName = string.IsNullOrWhiteSpace(editEmployeeDto.FirstName) ? employee.FirstName : editEmployeeDto.FirstName;
-            employee.LastName = string.IsNullOrWhiteSpace(editEmployeeDto.LastName) ? employee.LastName : editEmployeeDto.LastName;
-            employee.Patronymic = string.IsNullOrWhiteSpace(editEmployeeDto.Patronymic) ? employee.Patronymic : editEmployeeDto.Patronymic;
-            employee.Position = Enum.IsDefined(typeof(Position), editEmployeeDto.Position) ? editEmployeeDto.Position : employee.Position;
-            employee.Shifts = editEmployeeDto.Shifts?.Count() > 0 ? editEmployeeDto.Shifts : employee.Shifts;
-
             _context.Employees.Update(employee);
             _context.SaveChanges();
-
-            return GetEmployeeById(employee.Id);
         }
 
-        public void DeleteEmployee(int Id)
+        public void DeleteEmployee(Employee employee)
         {
-            var employee = _context.Employees.Find(Id);
-
-            if (employee is null)
-            {
-                throw new KeyNotFoundException();
-            }
-
             _context.Employees.Remove(employee);
             _context.SaveChanges();
         }

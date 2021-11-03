@@ -17,7 +17,7 @@ namespace Domain.Extensions
                 FirstName = employee.FirstName,
                 Patronymic = employee.Patronymic,
                 Position = employee.Position,
-                Shifts = employee.Shifts.ToShiftDtoList()
+                Shifts = employee.Shifts?.ToShiftDtoList()
             };
         }
 

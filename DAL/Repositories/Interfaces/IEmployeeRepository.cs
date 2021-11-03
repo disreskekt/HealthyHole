@@ -1,5 +1,4 @@
-﻿using Domain.Models.Dto;
-using HealthyHole.Models;
+﻿using HealthyHole.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -9,9 +8,9 @@ namespace DAL.Repositories.Interfaces
 {
     public interface IEmployeeRepository
     {
-        Employee AddEmployee(AddEmployeeDto addEmployeeDto);
-        Employee EditEmployee(EditEmployeeDto editEmployeeDto);
-        void DeleteEmployee(int Id);
+        void AddEmployee(Employee employee);
+        void EditEmployee(Employee employee);
+        void DeleteEmployee(Employee employee);
         IEnumerable<Employee> GetAllEmployees(Expression<Func<Employee, bool>> predicate = null);
         Employee GetEmployeeById(int Id);
     }
